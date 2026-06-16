@@ -12,24 +12,24 @@ const JSON_HEADERS = {
   'Content-Type': 'application/json',
 };
 
-interface ApiNovelItem {
+type ApiNovelItem = {
   title: string;
   slug: string;
   cover?: { large?: string };
-}
+};
 
-interface ApiNovelDetail extends ApiNovelItem {
+type ApiNovelDetail = ApiNovelItem & {
   synopsis?: string;
   author?: string;
   status?: string;
-  categories?: Array<{ name: string }>;
-}
+  categories?: { name: string }[];
+};
 
-interface ApiChapter {
+type ApiChapter = {
   title?: string;
   longTitle?: string;
   slug: string;
-}
+};
 
 // Category IDs from GET /api/categories
 // Format: base64(numeric_id)--hmac_signature
@@ -206,7 +206,7 @@ class NovelMania implements Plugin.PluginBase {
     const novelJson = await fetchApi(`${API}/novels/${slug}`, {
       headers: JSON_HEADERS,
     }).then(r => r.json());
-    const n = novelJson.data;
+    const n = novelJson.data as ApiNovelDetail;
 
     // Collect all chapters — API paginates (20 items per page)
     const chapters: Plugin.ChapterItem[] = [];
